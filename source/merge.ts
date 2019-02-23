@@ -38,16 +38,29 @@ export function mergeOptions(...sources: Partial<Options>[]): Partial<Options> &
 	//       populate the `hooks` object in the loop below, TypeScript want us to
 	//       put them into the object upon initialization, because it cannot infer
 	//       that they are going to conform correctly in runtime.
-	// eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
+  // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
+  const initializeHooks = (): Hooks => {
+    const hooks: Hooks = {};
+    for (const hook of knownHookEvents) {
+      hooks[hook] = [];
+    }
+    return hooks;
+  }
+  const hmm: Hooks = {} as Hooks;
 	const hooks = {} as {[Key in HookEvent]: HookType[]};
 	for (const hook of knownHookEvents) {
 		hooks[hook] = [];
+  }
+  for (const hook of knownHookEvents) {
+		hmm[hook] = [];
 	}
+
 
 	for (const source of sources) {
 		if (source.hooks) {
 			for (const hook of knownHookEvents) {
-				hooks[hook] = hooks[hook].concat(source.hooks[hook] || []);
+        hooks[hook] = hooks[hook].concat(source.hooks[hook] || []);
+        hmm[hook] = hmm[hook].concat(hmm[hook]);
 			}
 		}
 	}

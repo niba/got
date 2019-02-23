@@ -12,6 +12,8 @@ export type NextFunction = (error?: Error | string) => void;
 
 export type IterateFunction = (options: Options) => void;
 
+export type HandlerFunction = ((options: Options, callback: NextFunction) => void) | ((options: Options, callback: IterateFunction) => void);
+export type Headers = { [key: string]: any };
 export interface Response extends IncomingMessage {
 	body: string | Buffer;
 	statusCode: number;
@@ -45,7 +47,7 @@ export interface Instance {
 
 export interface InterfaceWithDefaults extends Instance {
 	defaults: {
-		handler: (options: Options, callback: NextFunction | IterateFunction) => void;
+		handler: HandlerFunction;
 		options: Options;
 	};
 }
@@ -59,8 +61,56 @@ interface RetryOption {
 }
 
 export interface MergedOptions extends Options {
-	retry: RetryOption;
+  retry: RetryOption;
+  mutableDefault: boolean;
 }
+
+export interface Options2 {
+  dnsCache: boolean;
+  cache: boolean;
+  stream: boolean;
+  decompress: boolean;
+  throwHttpErrors: boolean;
+  followRedirect: boolean;
+  useElectronNet: boolean;
+  responseType: "text" | "json" | "buffer";
+  resolveBodyOnly: boolean;
+  hooks: Partial<Hooks>;
+  headers: { [key: string]: any };
+  retry?: number | RetryOption;
+}
+
+export type DefaultHandler = (options: Options, callback: IterateFunction) => void;
+export interface CreateDefaults {
+  options: Options2;
+  mutableDefaults: boolean;
+  handler: HandlerFunction;
+}
+
+export interface GotOptions {
+  baseUrl: string;
+  headers: Headers;
+  stream: boolean;
+  body: string | Buffer | ReadableStream;
+  json: Object | any[] | number | string | boolean | null;
+  responseType: "text" | "json" | "buffer";
+  resolveBodyOnly: boolean;
+  cookieJar: any; // CookieJar
+  encoding: BufferEncoding | null;
+  form: any;
+  searchParams: string | { [key: string]: string | number } | URLSearchParams;
+  timeout: number | {};
+  retry: number | {};
+  followRedirect: boolean;
+  decompress: boolean;
+  cache: boolean;
+  dnsCache: boolean;
+  request: () => {}
+  useElectronNet: boolean;
+  throwHttpErrors: boolean;
+  agent: any // todo;
+  hooks: Partial<Hooks>;
+};
 
 export interface Options extends RequestOptions {
 	host: string;

@@ -1,8 +1,11 @@
 'use strict';
+
+import { CreateDefaults } from "./utils/types";
+
 const pkg = require('../package.json');
 const create = require('./create');
 
-const defaults = {
+const defaults: CreateDefaults = {
 	options: {
 		retry: {
 			retries: 2,
